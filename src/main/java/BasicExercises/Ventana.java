@@ -21,7 +21,9 @@ public class Ventana extends JFrame {
         setTitle("Wick draw - Romario Estrada");
         setSize(1000,1000);
         setVisible(true);
-        setResizable(true);
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setBackground(Color.black);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new GridLayout(1, 1));
         setLocationRelativeTo(null);

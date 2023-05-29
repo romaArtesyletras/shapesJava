@@ -9,7 +9,9 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+
 
 /**
  *
@@ -35,103 +37,31 @@ public class Panel extends JPanel {
     static ArrayList<Polygon> polygons = new ArrayList<Polygon>();
     static ArrayList<Color> colors = new ArrayList<Color>();
 
-    // METHODS
-
-    private void reset() {
-        x1 = 0;
-        x2 = 0;
-        y1 = 0;
-        y2 = 0;
-
-        px = new Point2D.Double(x1, y1);
-        py = new Point2D.Double(x2, y2);
-
-        pxTempo = new Point2D.Double(x2, y2);
-        pyTempo = new Point2D.Double(x1, y1);
-
-        init = true;
-    }
-
-    private void paintPolygon(Graphics g) {
-        super.paint(g);
-        for(int i = 0; i < colors.size(); i++){
-            g.setColor(colors.get(i));
-            g.fillPolygon(polygons.get(i));
-        }
-    }
-
-    private void paintLine(double[][] coordinate, Graphics gra, boolean end, float top, Color trace) {
-        Graphics2D g2 = (Graphics2D)gra;
-
-        Stroke pencil = new BasicStroke(top);
-        g2.setStroke(pencil);
-
-        g2.setColor(trace);
-
-        reset();
-
-        for (int e = 0; e < coordinate.length; e++) {
-            boolean flight = false;
-
-            if(Math.pow(-1, (e+1))> 0) flight = true;
-
-            Line2D lMoon = paintCoordinate(coordinate[e][0], coordinate[e][1], flight);
-            init = false;
-
-            if(init == false && e > 0) g2.draw(lMoon);
-
-            if(e == coordinate.length-1 && end == true) {
-                lMoon = new Line2D.Double(pyTempo, pxTempo);
-                g2.draw(lMoon);
-            }
-        }
-    }
-
-    private void createPolygon(int[] coordinateX, int[] coordinateY, Graphics gra, Color color, int sides) {
-        super.paint(gra);
-        Polygon polygon = new Polygon(coordinateX, coordinateY, sides);
-
-        polygons.add(polygon);
-        colors.add(color);
-    }
-
-    private Line2D paintCoordinate(double pMoon, double pMoon2, boolean flight) {
-        
-        if(flight == false && init == true) {
-            x1 = pMoon;
-            y1 = pMoon2;
-
-            px = new Point2D.Double(x1, y1);
-            pxTempo = px;
-            pyTempo = px;
-        }
-
-        if(!init) {
-            px = pxTempo;
-            x2 = pMoon;
-            y2 = pMoon2;
-            py = new Point2D.Double(x2, y2);
-            pxTempo = py;
-        }
-        
-        Line2D lActual = new Line2D.Double(px, py);
-
-        return lActual;
-    }
-
-
     public void paint(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+        super.paint(g);
+        Graphics2D g2d = (Graphics2D) g;
+
+        // Enable anti-aliasing for smoother rendering
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Create a scaling transformation
+        double scaleX = 2.5;
+        double scaleY = 2.5;
+        AffineTransform scalingTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
+
+        // Apply the scaling transformation to the graphics object
+        g2d.transform(scalingTransform);
 
         // uncomment to active every draw
         
-        // paintCube(g2);
-        // paintLadyBug(g2);
-        // paintRooster(g2);
-        // paintTrain(g2);
-        // paintWich(g2);
+        // paintCube(g2d);
+        // paintLadyBug(g2d);
+        // paintRooster(g2d);
+        // paintTrain(g2d);
+        paintWich(g2d);
     }
 
+    // Graphic draws
     public void paintCube(Graphics2D g2) {
         // Front square
         Line2D line1 = new Line2D.Double(100, 130, 100, 280);
@@ -628,6 +558,7 @@ public class Panel extends JPanel {
     }
 
     public void paintWich(Graphics2D g2) {
+
         double[][] pMoon = new double[][] {
             {293, 11}, {304, 17}, {308, 26},
             {308, 43}, {304, 53}, {293, 59},
@@ -861,11 +792,11 @@ public class Panel extends JPanel {
         int[] cBroomX = {283, 287, 336, 336, 287, 283};
         int[] cBroomY = {175, 160, 160, 196, 196, 181};
 
-        int[] cBroomSrickDX = {166, 192, 192, 166};
-        int[] cBroomSrickDY = {175, 175, 181, 181};
+        int[] cBroomStickDX = {166, 192, 192, 166};
+        int[] cBroomStickDY = {175, 175, 181, 181};
 
-        int[] cBroomSrickIX = {256, 283, 283, 256};
-        int[] cBroomSrickIY = {175, 175, 181, 181};
+        int[] cBroomStickIX = {256, 283, 283, 256};
+        int[] cBroomStickIY = {175, 175, 181, 181};
 
 
         polygons.clear();
@@ -877,20 +808,173 @@ public class Panel extends JPanel {
         Color CbroomStick = new Color(182, 140, 95);
         Color Cpurple = new Color(146, 71, 204);
         Color CgreenSkin = new Color(133, 220, 78);
-        Color Cblack = Color.BLACK;
-        Color Cwhite = Color.WHITE;
+        Color Cblack = Color.black;
+        Color Cwhite = Color.white;
 
-        createPolygon(cMoonX, cMoonY, g2, CyellowMoon, 12);
-        createPolygon(cHat1X, cHat1Y, g2, CyellowSock, 4);
-        createPolygon(cHat2X, cHat2Y, g2, Cblack, 4);
-        createPolygon(cHatA1X, cHatA1Y, g2, Cblack, 4);
-        // createPolygon(cHatA2X, cHatA2Y, g2, Cblack, 4);
-        createPolygon(cHatA1X, cHatA1Y, g2, Cblack, 4);
-        createPolygon(cHatA1X, cHatA1Y, g2, Cblack, 4);
+        createPolygon(cMoonX, cMoonY, g2, CyellowMoon);
+
+        createPolygon(cHat1X, cHat1Y, g2, CyellowSock);
+        createPolygon(cHat2X, cHat2Y, g2, Cblack);
+
+        createPolygon(cHatA1X, cHatA1Y, g2, Cblack);
+        // createPolygon(cHatA2X, cHatA2Y, g2, Cblack);
+        createPolygon(cHatA1X, cHatA1Y, g2, Cblack);
+
+        createPolygon(cHairRightX, cHairRightY, g2, Cblack);
+        createPolygon(cHairLeftX, cHairLeftY, g2, Cblack);
+
+        createPolygon(cFaceX, cFaceY, g2, CgreenSkin);
+
+        createPolygon(cEyeRightX, cEyeRightY, g2, Cwhite);
+        createPolygon(cEyeLeftX, cEyeLeftY, g2, Cwhite);
+
+        createPolygon(cPupilRightX, cPupilRightY, g2, Cblack);
+        createPolygon(cPupilLeftX, cPupilLeftY, g2, Cblack);
+
+        createPolygon(cHatTopX, cHatTopY, g2, Cpurple);
+        createPolygon(cHatBottomtX, cHatBottomtY, g2, Cpurple);
+
+        // createPolygon(cHatAlaX, cHatAlaY, g2, Cpurple);
+
+        createPolygon(cArmRightX, cArmRightY, g2, Cpurple);
+        createPolygon(cArmLeftX, cArmLeftY, g2, Cpurple);
+
+        createPolygon(cBodyX, cBodyY, g2, Cpurple);
+
+        createPolygon(cHandRightX, cHandRightY, g2, CgreenSkin);
+        createPolygon(cHandLeftX, cHandLeftY, g2, CgreenSkin);
+
+        createPolygon(cLegRightX, cLegRightY, g2, CgreenSkin);
+        createPolygon(cLegLeftX, cLegLeftY, g2, CgreenSkin);
+
+        createPolygon(cSockRightX, cSockRightY, g2, CyellowSock);
+        createPolygon(cSockLeftX, cSockLeftY, g2, CyellowSock);
+
+        createPolygon(cShoeRightX, cShoeRightY, g2, Cblack);
+        createPolygon(cShoeLeftX, cShoeLeftY, g2, Cblack);
         
+        createPolygon(cBroomX, cBroomY, g2, CYellowBroom);
 
+        createPolygon(cBroomStickDX, cBroomStickDY, g2, CbroomStick);
+        createPolygon(cBroomStickIX, cBroomStickIY, g2, CbroomStick);
 
+        paintPolygon(g2);
+
+        paintLine(pMoon, g2, true, 1, Cblack);
+        paintLine(pMoon, g2, true, 2, Cblack);
+        paintLine(pHat, g2, true, 3, Cblack);
+        paintLine(c1Hat, g2, true, 3, Cblack);
+        paintLine(c2Hat, g2, true, 3, Cblack);
+        paintLine(a1Hat, g2, true, 3, Cblack);
+        paintLine(a2Hat, g2, true, 2, Cblack);
+        paintLine(alaHat, g2, true, 2, Cblack);
+        paintLine(hair1, g2, true, 2, Cblack);
+        paintLine(eyeLeft, g2, true, 2, Cblack);
+        paintLine(eyeRight, g2, true, 2, Cblack);
+        paintLine(pupilLeft, g2, true, 2, Cblack);
+        paintLine(pupilRight, g2, true, 2, Cblack);
+        paintLine(nose, g2, false, 2, Cblack);
+        paintLine(mouth, g2, false, 2, Cblack);
+        paintLine(face, g2, true, 2, Cblack);
+        paintLine(body, g2, false, 2, Cblack);
+        paintLine(rightArm, g2, false, 2, Cblack);
+        paintLine(leftArm, g2, false, 2, Cblack);
+        paintLine(rightHand, g2, false, 2, Cblack);
+        paintLine(leftHand, g2, false, 2, Cblack);
+        paintLine(broom, g2, true, 3, Cblack);
+        paintLine(broom1, g2, true, 3, Cblack);
+        paintLine(broom2, g2, true, 3, Cblack);
+        paintLine(adesc1, g2, false, 3, Cblack);
+        paintLine(adesc2, g2, false, 3, Cblack);
+        paintLine(adesc3, g2, false, 3, Cblack);
+        paintLine(rightLeg, g2, false, 2, Cblack);
+        paintLine(leftLeg, g2, false, 2, Cblack);
+        paintLine(rightSock, g2, false, 2, Cblack);
+        paintLine(leftSock, g2, false, 2, Cblack);
+    }
+    
+    // METHODS
+    private void reset() {
+        x1 = 0;
+        x2 = 0;
+        y1 = 0;
+        y2 = 0;
+
+        px = new Point2D.Double(x1, y1);
+        py = new Point2D.Double(x2, y2);
+
+        pxTempo = new Point2D.Double(x2, y2);
+        pyTempo = new Point2D.Double(x1, y1);
+
+        init = true;
     }
 
-    
+    private void paintPolygon(Graphics g) {
+        super.paint(g);
+        for(int i = 0; i < colors.size(); i++){
+            g.setColor(colors.get(i));
+            g.fillPolygon(polygons.get(i));
+        }
+    }
+
+    private void paintLine(double[][] coordinate, Graphics2D g2, boolean end, float top, Color trace) {
+        // Graphics2D g2 = (Graphics2D)g2;
+
+        Stroke pencil = new BasicStroke(top);
+        g2.setStroke(pencil);
+
+        g2.setColor(trace);
+
+        reset();
+
+        for (int e = 0; e < coordinate.length; e++) {
+            boolean flight = false;
+
+            if(Math.pow(-1, (e+1))> 0) flight = true;
+
+            Line2D some = paintCoordinate(coordinate[e][0], coordinate[e][1], flight);
+            init = false;
+
+            if(init == false && e > 0) g2.draw(some);
+
+            if(e == coordinate.length-1 && end == true) {
+                some = new Line2D.Double(pyTempo, pxTempo);
+                g2.draw(some);
+            }
+        }
+    }
+
+    // private void createPolygon(int[] coordinateX, int[] coordinateY, Graphics2D g2, Color color, int sides) {
+    private void createPolygon(int[] coordinateX, int[] coordinateY, Graphics2D g2, Color color) {
+        super.paint(g2);
+        Polygon polygon = new Polygon(coordinateX, coordinateY, coordinateX.length);
+
+        polygons.add(polygon);
+        colors.add(color);
+    }
+
+    private Line2D paintCoordinate(double pMoon, double pMoon2, boolean flight) {
+        
+        if(flight == false && init == true) {
+            x1 = pMoon;
+            y1 = pMoon2;
+
+            px = new Point2D.Double(x1, y1);
+            pxTempo = px;
+            pyTempo = px;
+        }
+
+        if(!init) {
+            px = pxTempo;
+            x2 = pMoon;
+            y2 = pMoon2;
+            py = new Point2D.Double(x2, y2);
+            pxTempo = py;
+        }
+        
+        Line2D lActual = new Line2D.Double(px, py);
+
+        return lActual;
+    }
+
 }
