@@ -1,6 +1,8 @@
 package BasicExercises;
 
 import java.awt.Color;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 
 import javax.swing.JFrame;
 
@@ -8,17 +10,43 @@ import javax.swing.JFrame;
  *
  * @author PC1-17
  */
-public class Ventana {
-    public static void main(String[] args){
-        JFrame ventana = new JFrame("Lineas - Circulares - Mariquita");
-        Panel codigo = new Panel();
+public class Ventana extends JFrame {
 
-        ventana.add(codigo);
-        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ventana.setBackground(Color.white);
-        ventana.setSize(400, 400);
-        ventana.setLocationRelativeTo(null);
-        ventana.setVisible(true);
-        ventana.setResizable(false);
+    public static final long serialVersionUID = 1L;
+    
+    private Panel panel;
+
+    public Ventana() {
+        // Diseño
+        setTitle("Wick draw - Romario Estrada");
+        setSize(1000,1000);
+        setVisible(true);
+        setResizable(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new GridLayout(1, 1));
+        setLocationRelativeTo(null);
+
+        panel = new Panel();
+
+        add(panel);
+    }
+
+    public static void main(String[] args){
+        // JFrame ventana = new JFrame("Lineas - Circulares - Mariquita");
+        // Panel codigo = new Panel();
+
+        // ventana.add(codigo);
+        // ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // ventana.setBackground(Color.white);
+        // ventana.setSize(400, 400);
+        // ventana.setLocationRelativeTo(null);
+        // ventana.setVisible(true);
+        // ventana.setResizable(false);
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run(){
+                new Ventana().setVisible(true);
+            }
+        });
     } 
 }

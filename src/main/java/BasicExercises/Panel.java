@@ -1,18 +1,124 @@
 package BasicExercises;
 
+import javax.print.attribute.standard.Sides;
 import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.util.ArrayList;
 
 /**
  *
  * @author PC1-17
  */
 public class Panel extends JPanel {
+
+    private static final long serialVersionUID = 1L;
+
+    private double x1 = 0;
+    private double x2 = 0;
+    private double y1 = 0;
+    private double y2 = 0;
+
+    private Point2D px = new Point2D.Double(x1, y1);
+    private Point2D py = new Point2D.Double(x2, y2);
+
+    private Point2D pxTempo = new Point2D.Double(x2, y2);
+    private Point2D pyTempo = new Point2D.Double(x1, y1);
+
+    private boolean init = true;
+
+    static ArrayList<Polygon> polygons = new ArrayList<Polygon>();
+    static ArrayList<Color> colors = new ArrayList<Color>();
+
+    // METHODS
+
+    private void reset() {
+        x1 = 0;
+        x2 = 0;
+        y1 = 0;
+        y2 = 0;
+
+        px = new Point2D.Double(x1, y1);
+        py = new Point2D.Double(x2, y2);
+
+        pxTempo = new Point2D.Double(x2, y2);
+        pyTempo = new Point2D.Double(x1, y1);
+
+        init = true;
+    }
+
+    private void paintPolygon(Graphics g) {
+        super.paint(g);
+        for(int i = 0; i < colors.size(); i++){
+            g.setColor(colors.get(i));
+            g.fillPolygon(polygons.get(i));
+        }
+    }
+
+    private void paintLine(double[][] coordinate, Graphics gra, boolean end, float top, Color trace) {
+        Graphics2D g2 = (Graphics2D)gra;
+
+        Stroke pencil = new BasicStroke(top);
+        g2.setStroke(pencil);
+
+        g2.setColor(trace);
+
+        reset();
+
+        for (int e = 0; e < coordinate.length; e++) {
+            boolean flight = false;
+
+            if(Math.pow(-1, (e+1))> 0) flight = true;
+
+            Line2D lMoon = paintCoordinate(coordinate[e][0], coordinate[e][1], flight);
+            init = false;
+
+            if(init == false && e > 0) g2.draw(lMoon);
+
+            if(e == coordinate.length-1 && end == true) {
+                lMoon = new Line2D.Double(pyTempo, pxTempo);
+                g2.draw(lMoon);
+            }
+        }
+    }
+
+    private void createPolygon(int[] coordinateX, int[] coordinateY, Graphics gra, Color color, int sides) {
+        super.paint(gra);
+        Polygon polygon = new Polygon(coordinateX, coordinateY, sides);
+
+        polygons.add(polygon);
+        colors.add(color);
+    }
+
+    private Line2D paintCoordinate(double pMoon, double pMoon2, boolean flight) {
+        
+        if(flight == false && init == true) {
+            x1 = pMoon;
+            y1 = pMoon2;
+
+            px = new Point2D.Double(x1, y1);
+            pxTempo = px;
+            pyTempo = px;
+        }
+
+        if(!init) {
+            px = pxTempo;
+            x2 = pMoon;
+            y2 = pMoon2;
+            py = new Point2D.Double(x2, y2);
+            pxTempo = py;
+        }
+        
+        Line2D lActual = new Line2D.Double(px, py);
+
+        return lActual;
+    }
+
 
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -22,7 +128,8 @@ public class Panel extends JPanel {
         // paintCube(g2);
         // paintLadyBug(g2);
         // paintRooster(g2);
-        paintTrain(g2);
+        // paintTrain(g2);
+        // paintWich(g2);
     }
 
     public void paintCube(Graphics2D g2) {
@@ -519,4 +626,271 @@ public class Panel extends JPanel {
         g2.fillPolygon(poly2);
 
     }
+
+    public void paintWich(Graphics2D g2) {
+        double[][] pMoon = new double[][] {
+            {293, 11}, {304, 17}, {308, 26},
+            {308, 43}, {304, 53}, {293, 59},
+            {309, 59}, {319, 54}, {323, 43},
+            {323, 26}, {318, 16}, {309, 11},
+        };
+
+        double[][] pHat = new double[][] {
+            {225, 10}, {246, 26}, {234, 26},
+            {246, 48}, {252, 59}, {257, 69},
+            {192, 69}, {198, 59}, {204, 48},
+        };
+
+        double[][] c1Hat = new double[][] {
+            {219, 48}, {230, 48},
+            {230, 59}, {219, 59},
+        };
+
+        double[][] c2Hat = new double[][] {
+            {214, 43}, {235, 43},
+            {235, 64}, {214, 64},
+        };
+
+        double[][] a1Hat = new double[][] {
+            {204, 48}, {214, 48},
+            {214, 59}, {198, 59},
+        };
+
+        double[][] a2Hat = new double[][] {
+            {246, 48}, {235, 48},
+            {235, 59}, {252, 59},
+        };
+
+        double[][] alaHat = new double[][] {
+            {165, 69}, {284, 69},
+            {284, 75}, {165, 75},
+        };
+
+        double[][] hair1 = new double[][] {
+            {191, 75}, {160, 101}, {166, 107},
+            {187, 86}, {171, 107}, {177, 112},
+            {190, 96}, {182, 117}, {188, 122},
+            {204, 75},
+        };
+
+        double[][] eyeLeft = new double[][] {
+            {203, 80}, {203, 96},
+            {220, 96}, {220, 80},
+        };
+
+        double[][] eyeRight = new double[][] {
+            {228, 80}, {228, 96},
+            {245, 96}, {245, 80},
+        };
+
+        double[][] pupilLeft = new double[][] {
+            {209, 85}, {209, 96},
+            {220, 96}, {220, 85},
+        };
+
+        double[][] pupilRight = new double[][] {
+            {228, 85}, {228, 96},
+            {239, 96}, {239, 85},
+        };
+
+        double[][] face = new double[][] {
+            {204, 75}, {193, 107}, {193, 117},
+            {208, 132}, {241, 132}, {256, 117},
+            {256, 110}, {244, 75},
+        };
+
+        double[][] nose = new double[][] {
+            {245, 96}, {198, 96},
+            {198, 106}, {231, 106},
+        };
+
+        double[][] mouth = new double[][] {
+            {209, 112}, {209, 118}, {214, 122},
+            {236, 122}, {241, 118}, {241, 112},
+        };
+
+        double[][] body = new double[][] {
+            {208, 132}, {192, 175}, {192, 181},
+            {256, 181}, {256, 175}, {241, 132},
+        };
+
+        double[][] rightArm = new double[][] {
+            {208, 132}, {176, 165},
+            {181, 170}, {201, 151},
+        };
+
+        double[][] leftArm = new double[][] {
+            {241, 132}, {272, 128},
+            {278, 133}, {247, 149},
+        };
+
+        double[][] rightHand = new double[][] {
+            {176, 165}, {171, 170}, {171, 175},
+            {181, 175}, {181, 170},
+        };
+
+        double[][] leftHand = new double[][] {
+            {271, 128}, {272, 117}, {277, 117},
+            {277, 122}, {283, 117}, {288, 127},
+            {278, 133},
+        };
+
+        double[][] broom = new double[][] {
+            {256, 175}, {283, 175}, {283, 181}, {256, 181},
+        };
+
+        double[][] broom1 = new double[][] {
+            {166, 175}, {192, 175}, {192, 181}, {166, 181},
+        };
+
+        double[][] broom2 = new double[][] {
+            {283, 175}, {287, 160}, {336, 160},
+            {336, 196}, {287, 196}, {283, 181},
+        };
+
+        double[][] adesc1 = new double[][] {
+            {192, 175}, {192, 181},
+        };
+
+        double[][] adesc2 = new double[][] {
+            {256, 175}, {256, 181},
+        };
+
+        double[][] adesc3 = new double[][] {
+            {283, 175}, {283, 181},
+        };
+
+        double[][] rightLeg = new double[][] {
+            {207, 181}, {219, 205}, {240, 205},
+            {246, 215}, {246, 198}, {225, 198},
+            {218, 181},
+        };
+
+        double[][] leftLeg = new double[][] {
+            {230, 181}, {239, 197}, {260, 197},
+            {266, 207}, {266, 190}, {245, 190},
+            {241, 181},
+        };
+
+        double[][] rightSock = new double[][] {
+            {230, 198}, {230, 205},
+            {235, 205}, {235, 198},
+        };
+
+        double[][] leftSock = new double[][] {
+            {150, 190}, {250, 197},
+            {255, 197}, {255, 190},
+        };
+
+        // coordinates of polygons
+        int[] cMoonX = {293, 309, 318, 323, 323, 319, 309, 293, 304, 308, 308, 304};
+        int[] cMoonY = {11, 11, 16, 26, 43, 54, 59, 59, 53, 43, 26, 17};
+
+        int[] cHat1X = {214, 235, 235, 214};
+        int[] cHat1Y = {214, 235, 235, 214};
+
+        int[] cHat2X = {219, 230, 230, 219};
+        int[] cHat2Y = {48, 48, 59, 59};
+
+        int[] cHatA1X = {204, 214, 214, 198};
+        int[] cHatA1Y = {48, 48, 59, 59};
+
+        int[] cHairRightX = {191, 160, 166, 187, 171, 177, 190, 182, 188, 204};
+        int[] cHairRightY = {75, 101, 107, 86, 107, 112, 96, 117, 122, 75};
+
+        int[] cHairLeftX = {244, 260, 266, 258, 271, 277, 261, 282, 277, 257};
+        int[] cHairLeftY = {75, 122, 117, 96, 112, 107, 86, 107, 107, 75};
+
+        int[] cFaceX = {204, 193, 193, 208, 241, 256, 256, 244};
+        int[] cFaceY = {75, 107, 117, 132, 132, 117, 110, 75};
+
+        int[] cEyeRightX = {203, 220, 220, 203};
+        int[] cEyeRightY = {80, 80, 96, 96};
+
+        int[] cEyeLeftX = {228, 245, 245, 228};
+        int[] cEyeLeftY = {80, 80, 96, 96};
+
+        int[] cPupilRightX = {209, 220, 220, 209};
+        int[] cPupilRightY = {85, 85, 96, 96};
+
+        int[] cPupilLeftX = {228, 239, 239, 228};
+        int[] cPupilLeftY = {85, 85, 96, 96};
+
+        int[] cHatTopX = {204, 225, 246, 234, 246, 235, 214, 214};
+        int[] cHatTopY = {48, 10, 26, 26, 48, 48, 43, 43, 48};
+
+        int[] cHatBottomtX = {198, 192, 257, 252, 235, 235, 214, 214};
+        int[] cHatBottomtY = {56, 69, 69, 59, 59, 64, 64, 59};
+
+        int[] cHatAlaX = {69, 75, 75, 69};
+        int[] cHatAlaY = {208, 201, 181, 176};
+
+        int[] cArmRightX = {208, 201, 181, 176};
+        int[] cArmRightY = {132, 151, 170, 165};
+
+        int[] cArmLeftX = {241, 247, 278, 272};
+        int[] cArmLeftY = {132, 149, 133, 128};
+
+        int[] cBodyX = {208, 241, 256, 256, 192, 192};
+        int[] cBodyY = {132, 132, 175, 181, 181, 175};
+
+        int[] cHandRightX = {171, 171, 176, 181, 181};
+        int[] cHandRightY = {175, 170, 165, 170, 175};
+
+        int[] cHandLeftX = {272,272, 277, 277, 283, 288, 278};
+        int[] cHandLeftY = {128, 117, 117, 122, 117, 127, 123};
+
+        int[] cLegRightX = {207, 218, 225, 230, 230, 219};
+        int[] cLegRightY = {181, 181, 198, 198, 205, 205};
+
+        int[] cLegLeftX = {230, 241, 245, 250, 250, 239};
+        int[] cLegLeftY = {181, 181, 190, 190, 197, 197};
+        
+        int[] cSockRightX = {230, 235, 235, 230};
+        int[] cSockRightY = {205, 205, 198, 198};
+
+        int[] cSockLeftX = {250, 255, 255, 250};
+        int[] cSockLeftY = {197, 197, 190, 190};
+
+        int[] cShoeRightX = {235, 240, 246, 246, 235};
+        int[] cShoeRightY = {205, 205, 215, 198, 198};
+
+        int[] cShoeLeftX = {255, 260, 266, 266, 255};
+        int[] cShoeLeftY = {197, 197, 207, 190, 190};
+
+        int[] cBroomX = {283, 287, 336, 336, 287, 283};
+        int[] cBroomY = {175, 160, 160, 196, 196, 181};
+
+        int[] cBroomSrickDX = {166, 192, 192, 166};
+        int[] cBroomSrickDY = {175, 175, 181, 181};
+
+        int[] cBroomSrickIX = {256, 283, 283, 256};
+        int[] cBroomSrickIY = {175, 175, 181, 181};
+
+
+        polygons.clear();
+        colors.clear();
+
+        Color CyellowMoon = new Color(239, 237, 48);
+        Color CyellowSock = new Color(253, 247, 51);
+        Color CYellowBroom = new Color(251, 208, 51);
+        Color CbroomStick = new Color(182, 140, 95);
+        Color Cpurple = new Color(146, 71, 204);
+        Color CgreenSkin = new Color(133, 220, 78);
+        Color Cblack = Color.BLACK;
+        Color Cwhite = Color.WHITE;
+
+        createPolygon(cMoonX, cMoonY, g2, CyellowMoon, 12);
+        createPolygon(cHat1X, cHat1Y, g2, CyellowSock, 4);
+        createPolygon(cHat2X, cHat2Y, g2, Cblack, 4);
+        createPolygon(cHatA1X, cHatA1Y, g2, Cblack, 4);
+        // createPolygon(cHatA2X, cHatA2Y, g2, Cblack, 4);
+        createPolygon(cHatA1X, cHatA1Y, g2, Cblack, 4);
+        createPolygon(cHatA1X, cHatA1Y, g2, Cblack, 4);
+        
+
+
+    }
+
+    
 }
