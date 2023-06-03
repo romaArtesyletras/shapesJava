@@ -2,13 +2,17 @@ package BasicExercises;
 
 import javax.print.attribute.standard.Sides;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+
 import java.awt.*;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
@@ -35,7 +39,20 @@ public class Panel extends JPanel {
     private boolean init = true;
 
     static ArrayList<Polygon> polygons = new ArrayList<Polygon>();
+
+    static ArrayList<Ellipse2D> elipse = new ArrayList<Ellipse2D>();
+    static ArrayList<Arc2D> arc = new ArrayList<Arc2D>();
+
+    static ArrayList<Color> borderColor = new ArrayList<Color>();
+    static ArrayList<Color> fillColor = new ArrayList<Color>();
+    static ArrayList<Color> elipseColors = new ArrayList<Color>();
+
+    static ArrayList<double[]> propertyArc = new ArrayList<double[]>();
+    static ArrayList<double[]> property = new ArrayList<double[]>();
+
     static ArrayList<Color> colors = new ArrayList<Color>();
+
+    static ArrayList<double[]> arcProperty = new ArrayList<double[]>();
 
     public void paint(Graphics g) {
         super.paint(g);
@@ -58,7 +75,8 @@ public class Panel extends JPanel {
         // paintLadyBug(g2d);
         // paintRooster(g2d);
         // paintTrain(g2d);
-        paintWich(g2d);
+        // paintWitch(g2d);
+        paintBee(g);
     }
 
     // Graphic draws
@@ -557,7 +575,7 @@ public class Panel extends JPanel {
 
     }
 
-    public void paintWich(Graphics2D g2) {
+    public void paintWitch(Graphics2D g2) {
 
         double[][] pMoon = new double[][] {
             {293, 11}, {304, 17}, {308, 26},
@@ -890,24 +908,129 @@ public class Panel extends JPanel {
         paintLine(rightLeg, g2, false, 2, Cblack);
         paintLine(leftLeg, g2, false, 2, Cblack);
         paintLine(rightSock, g2, false, 2, Cblack);
-        paintLine(leftSock, g2, false, 2, Cblack);
+        // paintLine(leftSock, g2, false, 2, Cblack);
     }
     
-    // METHODS
-    private void reset() {
-        x1 = 0;
-        x2 = 0;
-        y1 = 0;
-        y2 = 0;
+    public void paintBee(Graphics g) {
+        cleanArc();
+        cleanOval();
+        cleanPolygon();
+        reset();
 
-        px = new Point2D.Double(x1, y1);
-        py = new Point2D.Double(x2, y2);
+        // captured colors
+        Color Ceraser = new Color(240, 151, 203);
+        Color Cmetal = new Color(153, 153, 153);
+        Color Ctip = new Color(102, 102, 102);
+        Color Cwood = new Color(254, 232, 165);
+        Color Cyellow = Color.YELLOW;
+        Color Cwhite = Color.white;
+        Color Cblack = Color.black;
+        Color Ctest = Color.red;
 
-        pxTempo = new Point2D.Double(x2, y2);
-        pyTempo = new Point2D.Double(x1, y1);
+        // coordinates of polygons
 
-        init = true;
+        // pencil
+        int[] cPencilX = { 129, 244, 271, 261, 244, 129 };
+        int[] cPencilY = { 171, 171, 193, 202, 216, 216 };
+
+        int[] cTipPencilX = { 244, 270, 244, 239 };
+        int[] cTipPencilY = { 171, 193, 217, 203 };
+
+        createPolygon(cPencilX, cPencilY, g, Cyellow);
+        createPolygon(cTipPencilX, cTipPencilY, g, Cwood);
+
+        paintPolygon(g);
+        
+        int borderWidthPencil =  2;
+        int heightPencil =  45;
+
+        double[][] pencil = new double[][] {
+            {130, 170.5}, {244, 170.5}, {271, 193},
+            {261, 202}, {244, 216}, {130, 216},
+        };
+
+        double[][] pencilOne = new double[][] {
+            {244, 216}, {239, 193}, {244, 170.5},
+        };
+
+        paintLine(pencil,    (Graphics2D)g,    false, ((borderWidthPencil) - 1), Cblack);
+        paintLine(pencilOne, (Graphics2D)g,    false, ((borderWidthPencil) - 1), Cblack);
+
+        double[] pencilEraser = { 112-12, 171, heightPencil, heightPencil, 90, 180 };
+        double[] eraserLeafOne = { 124-12, 171, 28.5, heightPencil, 90, 180 };
+        double[] eraserLeafTwo = { 128-12, 171, 26.5, heightPencil, 90, 185 };
+
+        double[] pencilTip = { 260, 183, 20, 20, 140, 80 };
+
+        createArc(g, pencilEraser,     Arc2D.OPEN,    Cblack, 1, Ceraser, 1, borderWidthPencil);
+        createArc(g, eraserLeafOne,    Arc2D.OPEN,    Cblack, 1, Cmetal, 1, borderWidthPencil);
+        createArc(g, eraserLeafTwo,    Arc2D.OPEN,    Cblack, 1, Cyellow, 1, borderWidthPencil);
+        
+        createArc(g, pencilTip,        Arc2D.PIE,     Cblack, 1, Ctip, 1, borderWidthPencil);
+
+
+        paintArc(g);
+        cleanArc();
+
+        // wings
+        int[] wingRight = { 185, 18, 38, 61 };
+        int[] wingLeft = { 112, 50, 38, 61 };
+        int[] body = { 112, 70, 143, 100 };
+
+        createOval(g, wingRight,   Cwhite,   21.145,   6);
+        createOval(g, wingLeft,    Cwhite,         (-50.32),   6);
+        createOval(g, body,        Cblack,   0,        6);
+
+        paintOval(g, Cblack);
+        cleanOval();
+
+        // body details
+        var height = 96;
+        var positionTop = 72;
+        
+        double[] bodyBottom = { 138-6, positionTop, 70, height, 60, 230 };
+
+        double[] bodyOne = { 154-6, positionTop, 70, height, 73, 220 };
+        
+        double[] bodyTwo = { 112, positionTop, 143, height, 286, 150 };
+        double[] bodyThree = { 175, positionTop, 70, height, 105, 155 };
+
+        double[] mouth = { 208, 133, 24, 13, 0, -180 };
+
+        createArc(g, bodyBottom,       Arc2D.PIE,     Cblack, 1, Cyellow, 1, 6);
+        createArc(g, bodyOne,          Arc2D.PIE,     Cblack, 1, Cblack, 1, 2);
+
+        createArc(g, bodyTwo,          Arc2D.CHORD,   Cyellow, 1, Cyellow, 1, 2);
+        createArc(g, bodyThree,        Arc2D.PIE,   Cyellow, 0, Cyellow, 1, 2);
+
+        createArc(g, mouth,            Arc2D.OPEN,    Cblack, 1, Cblack, 0, 2);
+
+        paintArc(g);
+        cleanArc();
+
+        int[] leftEye = { 221, 52, 63, 69 };
+        int[] leftPupilEye = { 243, 74, 19, 22 };
+        int[] rightEye = { 177, 48, 69, 80 };
+        int[] rightPupilEye = { 200, 74, 23, 25 };
+
+        createOval(g, leftEye,         Cwhite, 0, 6);
+        createOval(g, leftPupilEye,    Cblack, 0, 2);
+        createOval(g, rightEye,        Cwhite, 0, 6);
+        createOval(g, rightPupilEye,   Cblack, 0, 2);
+
+        paintOval(g, Cblack);
+        cleanOval();
+
+        // // Name
+        g.setColor(Cblack);
+        g.setFont(new Font("Montserrat", Font.BOLD, 30));
+
+        String name = "Roma";
+
+        g.drawString(name, 135, 202);
     }
+
+    // METHODS
 
     private void paintPolygon(Graphics g) {
         super.paint(g);
@@ -945,8 +1068,8 @@ public class Panel extends JPanel {
     }
 
     // private void createPolygon(int[] coordinateX, int[] coordinateY, Graphics2D g2, Color color, int sides) {
-    private void createPolygon(int[] coordinateX, int[] coordinateY, Graphics2D g2, Color color) {
-        super.paint(g2);
+    private void createPolygon(int[] coordinateX, int[] coordinateY, Graphics g, Color color) {
+        super.paint(g);
         Polygon polygon = new Polygon(coordinateX, coordinateY, coordinateX.length);
 
         polygons.add(polygon);
@@ -977,4 +1100,142 @@ public class Panel extends JPanel {
         return lActual;
     }
 
+
+    // Cleaners
+    private void reset() {
+        x1 = 0;
+        x2 = 0;
+        y1 = 0;
+        y2 = 0;
+
+        px = new Point2D.Double(x1, y1);
+        py = new Point2D.Double(x2, y2);
+
+        pxTempo = new Point2D.Double(x2, y2);
+        pyTempo = new Point2D.Double(x1, y1);
+
+        init = true;
+    }
+    
+    private void cleanOval() {
+        elipse.clear();
+        elipseColors.clear();
+        property.clear();
+    }
+
+    private void cleanArc() {
+        arc.clear();
+        borderColor.clear();
+        fillColor.clear();
+        propertyArc.clear();
+    }
+
+    private void cleanPolygon() {
+        polygons.clear();
+        colors.clear();
+    }
+
+    // METHODS BEE
+    private void createOval(Graphics g, int[] coordinate, Color color, double angle, int brush){
+        int x = coordinate[0];
+        int y = coordinate[1];
+
+        double properties[] = { x, y, angle, brush };
+
+        Ellipse2D elipseToUse = new Ellipse2D.Double( 0, 0, coordinate[2], coordinate[3] );
+
+        elipse.add(elipseToUse);
+
+        elipseColors.add(color);
+        property.add(properties);
+    }
+
+    private void createArc(Graphics g2, double[] coordinate, int arcType, Color borderC, double withBorder, Color fillC, double withFillColor, float brush) {
+        double x = coordinate[0];
+        double y = coordinate[1];
+        double width = coordinate[2];
+        double height = coordinate[3];
+        double start = coordinate[4];
+        double extend = coordinate[5];
+
+        double arcProperties[] = { withBorder, withFillColor, brush };
+
+        Arc2D arc2d = new Arc2D.Double( x, y, width, height, start, extend, arcType );
+        
+        arc.add(arc2d);
+        borderColor.add(borderC);
+        
+        fillColor.add(fillC);
+        propertyArc.add(arcProperties);
+
+    }
+
+    private void paintArc(Graphics g) {
+        Graphics2D g2d = (Graphics2D)g;
+
+        int size = arc.size();
+
+        double withBorder;
+        double withFillColor;
+        double pencil;
+        double propertyRecover[];
+
+        for (int i = 0; i < size; i++) {
+            propertyRecover = propertyArc.get(i);
+            withBorder = propertyRecover[0];
+            withFillColor = propertyRecover[1];
+            pencil = propertyRecover[2];
+
+            Stroke brush = new BasicStroke((float) pencil);
+            g2d.setStroke(brush);
+
+            Arc2D objArc = arc.get(i);
+
+            if(withBorder == 1) {
+                g2d.setColor(borderColor.get(i));
+                g2d.draw(objArc);
+            } 
+            if(withFillColor == 1) {
+                g2d.setColor(fillColor.get(i));
+                g2d.fill(objArc);
+            }
+        }
+    }
+
+    private void paintOval(Graphics g, Color color) {
+        Graphics2D g2d = (Graphics2D)g;
+
+        int size = elipse.size();
+
+        double x;
+        double y;
+        double angle;
+        double pencil;
+        double [] propertyRecover;
+        
+        for (int i = 0; i < size; i++) {
+
+            AffineTransform old = g2d.getTransform();
+            propertyRecover = property.get(i);
+
+            x = propertyRecover[0];
+            y = propertyRecover[1];
+            angle = propertyRecover[2];
+            pencil = propertyRecover[3];
+
+            Stroke brush = new BasicStroke((float) pencil);
+            g2d.setStroke(brush);
+
+            g2d.translate(x, y);
+            g2d.rotate(angle * Math.PI/180);
+
+            g2d.setColor(color);
+            g2d.draw(elipse.get(i));
+            
+            g2d.setColor(elipseColors.get(i));
+            g2d.fill(elipse.get(i));
+
+            g2d.setTransform(old);
+        }
+    }
 }

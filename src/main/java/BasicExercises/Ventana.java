@@ -19,7 +19,7 @@ public class Ventana extends JFrame {
     public Ventana() {
         // Diseño
         setTitle("Wick draw - Romario Estrada");
-        setSize(1000,1000);
+        setSize(1000,700);
         setVisible(true);
         setResizable(false);
         setLocationRelativeTo(null);
