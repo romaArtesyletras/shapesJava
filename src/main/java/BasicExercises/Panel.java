@@ -1021,7 +1021,7 @@ public class Panel extends JPanel {
         paintOval(g, Cblack);
         cleanOval();
 
-        // // Name
+        // Name
         g.setColor(Cblack);
         g.setFont(new Font("Montserrat", Font.BOLD, 30));
 

@@ -29,7 +29,7 @@ public class Ventana extends JFrame {
         setLocationRelativeTo(null);
 
         panel = new Panel();
-
+        
         add(panel);
     }
 
